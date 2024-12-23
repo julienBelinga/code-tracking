@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Dynamique</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        td.empty {
+            background-color: #eaeaea;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calendrier Dynamique</h1>
+    <div id="calendar"></div>
+
+    <script>
+        function generateCalendar(month, year) {
+            // Obtenir le premier jour et le nombre de jours du mois
+            const firstDay = new Date(year, month, 1).getDay(); // 0 = Dimanche, 1 = Lundi, ...
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Tableaux des jours de la semaine
+            const daysOfWeek = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+            // Construire la table
+            let table = '<table>';
+            table += '<thead><tr>';
+            for (let day of daysOfWeek) {
+                table += `<th>${day}</th>`;
+            }
+            table += '</tr></thead><tbody>';
+
+            let date = 1;
+            const startDay = firstDay === 0 ? 6 : firstDay - 1; // Ajustement pour commencer par Lundi
+
+            for (let i = 0; i < 6; i++) { // Jusqu'à 6 semaines
+                table += '<tr>';
+                for (let j = 0; j < 7; j++) { // 7 jours par semaine
+                    if (i === 0 && j < startDay || date > daysInMonth) {
+                        table += '<td class="empty"></td>'; // Cases vides
+                    } else {
+                        table += `<td>${date}</td>`;
+                        date++;
+                    }
+                }
+                table += '</tr>';
+                if (date > daysInMonth) break; // Arrêter après le dernier jour
+            }
+
+            table += '</tbody></table>';
+
+            // Insérer la table dans le DOM
+            document.getElementById('calendar').innerHTML = table;
+        }
+
+        // Fonction pour générer le calendrier du mois et de l'année actuels
+        function loadCurrentMonthCalendar() {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            generateCalendar(currentMonth, currentYear);
+        }
+
+        // Charger automatiquement le calendrier pour le mois actuel
+        window.onload = loadCurrentMonthCalendar;
+    </script>
+</body>
+</html>
